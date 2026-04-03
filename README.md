@@ -12,4 +12,5 @@ Original demo at https://cordeep.mpiwg-berlin.mpg.de/
 uv sync
 uv run detect.py --source "screenshot.png"
 uv run detect.py --source "facsimile.pdf"
+uv run detect_batch.py dirpath
 ```
