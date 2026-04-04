@@ -1,12 +1,11 @@
 import argparse
-import subprocess
-import sys
 from pathlib import Path
+
+import detect
 
 
 DIAGRAMS_DIRNAME = "diagrams"
 PDF_GLOB = "*.pdf"
-DETECT_SCRIPT = Path(__file__).with_name("detect.py")
 
 
 def parse_args() -> argparse.Namespace:
@@ -21,19 +20,12 @@ def iter_pdfs(input_dir: Path) -> list[Path]:
 
 def run_detect(pdf_path: Path, output_dir: Path) -> None:
     output_dir.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(
-        [
-            sys.executable,
-            str(DETECT_SCRIPT),
-            "--source",
-            str(pdf_path),
-            "--project",
-            str(output_dir.parent),
-            "--name",
-            output_dir.name,
-            "--exist-ok",
-        ],
-        check=True,
+    detect.run(
+        source=str(pdf_path),
+        project=str(output_dir.parent),
+        name=output_dir.name,
+        exist_ok=True,
+        device="0"
     )
 
 
