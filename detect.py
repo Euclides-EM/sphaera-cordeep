@@ -177,6 +177,12 @@ def process_single_image_with_model(image_path, page_number, model, device, imgs
                 cv2.imwrite(save_path, im0)
 
 
+def normalize_imgsz(imgsz):
+    if isinstance(imgsz, int):
+        return (imgsz, imgsz)
+    return tuple(imgsz)
+
+
 @torch.no_grad()
 def single_run(weights, source, imgsz, conf_thres, iou_thres, max_det, device, view_img, save_txt, save_conf,
                save_crop, nosave, classes, agnostic_nms, augment, visualize, update, project, name, exist_ok,
@@ -251,7 +257,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
             device = select_device(device)
             model = DetectMultiBackend(weights, device=device, dnn=dnn)
             stride, names, pt, jit, onnx, engine = model.stride, model.names, model.pt, model.jit, model.onnx, model.engine
-            imgsz = check_img_size(imgsz, s=stride)
+            imgsz = normalize_imgsz(check_img_size(imgsz, s=stride))
 
             # Half precision setup
             half &= (pt or jit or engine) and device.type != 'cpu' and device.type != 'mps'
@@ -342,7 +348,7 @@ def run(weights=ROOT / 'yolov5s.pt',  # model.pt path(s)
     device = select_device(device)
     model = DetectMultiBackend(weights, device=device, dnn=dnn)
     stride, names, pt, jit, onnx, engine = model.stride, model.names, model.pt, model.jit, model.onnx, model.engine
-    imgsz = check_img_size(imgsz, s=stride)  # check image size
+    imgsz = normalize_imgsz(check_img_size(imgsz, s=stride))  # check image size
 
     # Half
     half &= (pt or jit or engine) and device.type != 'cpu' and device.type != 'mps'  # half precision only supported by PyTorch on CUDA
